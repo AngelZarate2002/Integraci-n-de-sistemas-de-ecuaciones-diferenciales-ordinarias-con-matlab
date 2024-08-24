@@ -1,0 +1,39 @@
+function dy=sistemaOde(t, y)
+%-----------Definicion de los parametros----------%
+m1 = 0.2;
+m2 = 0.1;
+l1 = 0.3;
+l2 = 0.25;
+g = 9.81;
+%--------------------------------------------------%
+dy = zeros(4,1);
+%-------Definicion de la dinamica del sistema------%
+y1 = y(1); % x1
+y2 = y(2); % dx1/dt
+y3 = y(3); % x2
+y4 = y(4); % dx2/dt
+
+dy(1) = y2;
+dy(2) = (1/((m1+m2)*l1))*[-m2*l2*[[(1/l2)*[-l1*[(1/(cos(y3-y1)))*[((y2^2)*(sin(y3-y1)))]]-((g)*(sin(y3)))]]*cos(y3-y1)-((y4^2)*sin(y3-y1))]-(m1+m2)*g*sin(y1)];
+dy(3) = y4;
+dy(4) = (1/l2)*[-l1*[[(1/((m1+m2)*l1))*[-m1*l2*[(1/(cos(y3-y1)))*[(y4^2)*sin(y3-y1)]]-(m1+m2)*g*sin(y1)]]*cos(y3-y1)+((y2^2)*sin(y3-y1))]-g*sin(y3)];
+%--------------------------------------------------%
+
+
+%------------otro archivo .m-----------------------%
+[t, y] = ode45(@sistemaOde, [0 10], [0 0 0.610865 0]);
+
+figure;
+subplot(2,1,1);
+plot(t, y(:,1), 'r', t, y(:,3), 'b');
+title('Posiciones');
+xlabel('Tiempo (s)');
+ylabel('Posición (m)');
+legend('x1(t)', 'x2(t)');
+
+subplot(2,1,2);
+plot(t, y(:,2), 'r', t, y(:,4), 'b');
+title('Velocidades');
+xlabel('Tiempo (s)');
+ylabel('Velocidad (m/s)');
+legend('dx1/dt', 'dx2/dt');
